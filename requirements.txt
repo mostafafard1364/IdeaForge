@@ -1,0 +1,29 @@
+# Core data science
+pandas>=2.0.0
+numpy>=1.24.0
+pyarrow>=14.0.0
+
+# Dashboard
+streamlit>=1.28.0
+plotly>=5.18.0
+
+# Configuration
+pydantic>=2.0.0
+pyyaml>=6.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Code quality
+ruff>=0.1.0
+mypy>=1.5.0
+
+# Performance (optional)
+# numba>=0.58.0
+
+# Backtesting (optional - can be installed separately)
+# vectorbt>=0.25.0
+
+# Exchange integration (optional)
+# ccxt>=4.0.0
