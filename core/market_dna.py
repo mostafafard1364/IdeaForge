@@ -97,7 +97,6 @@ class MarketDNAEngine:
             state.error_message = str(e)
         
         return state
-        return state
 
     def calculate_dataframe_states(
         self,

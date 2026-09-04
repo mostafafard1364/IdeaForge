@@ -97,6 +97,16 @@ class ChartRenderer:
                     x=df['timestamp'] if 'timestamp' in df.columns else df.index,
                     y=df['volume'],
                     name='Volume',
+                    marker_color=colors,
+                    opacity=0.6
+                ),
+                row=2, col=1
+            )
+        
+        # Add signals
+        if show_signals and 'signal' in df.columns:
+            self._add_signals(fig, df)
+        
         fig.update_layout(
             height=height,
             xaxis_rangeslider_visible=False,
@@ -110,38 +120,33 @@ class ChartRenderer:
         return fig
     
     def _add_colored_candles(self, fig: go.Figure, df: pd.DataFrame):
-        """Add candles colored by market state."""
+        """Add candles colored by market state.
+        
+        Each market color gets its own Candlestick trace so that
+        bodies and wicks are rendered in the market DNA color.
+        """
         x = df['timestamp'] if 'timestamp' in df.columns else df.index
         
-        fig.add_trace(
-            go.Candlestick(
-                x=x,
-                open=df['open'],
-                high=df['high'],
-                low=df['low'],
-                close=df['close'],
-                name='Price',
-                increasing_line_color='#32CD32',
-                decreasing_line_color='#DC143C'
-            ),
-            row=1, col=1
-        )
-        
-        # Add color markers
         for color_name, hex_color in self._color_map.items():
             mask = df['color'] == color_name
-            if mask.any():
-                fig.add_trace(
-                    go.Scatter(
-                        x=x[mask],
-                        y=df.loc[mask, 'low'] * 0.999,
-                        mode='markers',
-                        name=color_name.capitalize(),
-                        marker=dict(color=hex_color, size=8, symbol='diamond'),
-                        showlegend=True
-                    ),
-                    row=1, col=1
-                )
+            if not mask.any():
+                continue
+            fig.add_trace(
+                go.Candlestick(
+                    x=x[mask],
+                    open=df.loc[mask, 'open'],
+                    high=df.loc[mask, 'high'],
+                    low=df.loc[mask, 'low'],
+                    close=df.loc[mask, 'close'],
+                    name=color_name.capitalize(),
+                    increasing_line_color=hex_color,
+                    decreasing_line_color=hex_color,
+                    increasing_fillcolor=hex_color,
+                    decreasing_fillcolor=hex_color,
+                    line=dict(width=1)
+                ),
+                row=1, col=1
+            )
     
     def _add_signals(self, fig: go.Figure, df: pd.DataFrame):
         """Add buy/sell signal markers."""
@@ -221,28 +226,6 @@ class ChartRenderer:
             height=height, title='System Bar & Ratio',
             template='plotly_dark', paper_bgcolor='#1a1a2e', plot_bgcolor='#16213e',
             yaxis2=dict(overlaying='y', side='right', showgrid=False)
-        )
-        
-        return fig
-
-                    marker_color=colors,
-                    opacity=0.6
-                ),
-                row=2, col=1
-            )
-        
-        # Add signals
-        if show_signals and 'signal' in df.columns:
-            self._add_signals(fig, df)
-        
-        fig.update_layout(
-            height=height,
-            xaxis_rangeslider_visible=False,
-            showlegend=True,
-            template='plotly_dark',
-            paper_bgcolor='#1a1a2e',
-            plot_bgcolor='#16213e',
-            font=dict(color='#e0e0e0')
         )
         
         return fig

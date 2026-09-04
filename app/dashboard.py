@@ -126,6 +126,29 @@ def market_page():
         processed = data
     
     df = st.session_state.dna_engine.calculate_dataframe_states(processed)
+    st.session_state.processed_data = df
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        show_volume = st.checkbox("Show Volume", value=True)
+    with col2:
+        show_signals = st.checkbox("Show Signals", value=False)
+    with col3:
+        colored_candles = st.checkbox("Colored Candles", value=True)
+    with col4:
+        n_display = st.slider("Candles to Display", 50, 500, 200)
+    
+    display_df = df.tail(n_display)
+    fig = st.session_state.chart_renderer.create_chart(
+        display_df, title="Market DNA Chart",
+        show_volume=show_volume, show_signals=show_signals, colored_candles=colored_candles
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        eff_fig = st.session_state.chart_renderer.create_efficiency_chart(display_df)
+        st.plotly_chart(eff_fig, use_container_width=True)
     with col2:
         sb_fig = st.session_state.chart_renderer.create_system_bar_chart(display_df)
         st.plotly_chart(sb_fig, use_container_width=True)
@@ -156,7 +179,19 @@ def research_page():
     )
     
     fig = st.session_state.chart_renderer.create_chart(
+        df_with_signals.tail(200), title="Signals Chart", show_volume=True, show_signals=True
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    signals = signal_engine.get_signal_list(df_with_signals)
+    if signals:
+        st.subheader("Signal Statistics")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Signals", len(signals))
+        col2.metric("Entry Long", sum(1 for s in signals if s.type.value == 'entry_long'))
         col3.metric("Entry Short", sum(1 for s in signals if s.type.value == 'entry_short'))
+    
+    st.session_state.processed_data = df_with_signals
 
 
 def experiments_page():
@@ -249,7 +284,7 @@ def backtest_page():
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Return", f"{result.total_return_pct:.2f}%")
         col2.metric("Max Drawdown", f"{result.max_drawdown_pct:.2f}%")
-                col3.metric("Avg Trade", f"${result.avg_trade:.2f}")
+        col3.metric("Avg Trade", f"${result.avg_trade:.2f}")
         col4.metric("Expectancy", f"${result.expectancy:.2f}")
 
 
@@ -405,45 +440,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-        df_with_signals.tail(200), title="Signals Chart", show_volume=True, show_signals=True
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    
-    signals = signal_engine.get_signal_list(df_with_signals)
-    if signals:
-        st.subheader("Signal Statistics")
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Total Signals", len(signals))
-        col2.metric("Entry Long", sum(1 for s in signals if s.type.value == 'entry_long'))
-        col3.metric("Entry Short", sum(1 for s in signals if s.type.value == 'entry_short'))
-
-    st.session_state.processed_data = df
-    
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        show_volume = st.checkbox("Show Volume", value=True)
-    with col2:
-        show_signals = st.checkbox("Show Signals", value=False)
-    with col3:
-        colored_candles = st.checkbox("Colored Candles", value=True)
-    with col4:
-        n_display = st.slider("Candles to Display", 50, 500, 200)
-    
-    display_df = df.tail(n_display)
-    fig = st.session_state.chart_renderer.create_chart(
-        display_df, title="Market DNA Chart",
-        show_volume=show_volume, show_signals=show_signals, colored_candles=colored_candles
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        eff_fig = st.session_state.chart_renderer.create_efficiency_chart(display_df)
-        st.plotly_chart(eff_fig, use_container_width=True)
-    with col2:
-        sb_fig = st.session_state.chart_renderer.create_system_bar_chart(display_df)
-        st.plotly_chart(sb_fig, use_container_width=True)
-
-        st.session_state.runner = ExperimentRunner(st.session_state.registry)
