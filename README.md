@@ -27,7 +27,7 @@ pytest tests/ -v
 - **Interactive Charts**: Candlestick charts with custom colors based on market state
 - **Backtest Engine**: Event-driven backtesting with fees and slippage
 - **Experiment Framework**: Create, run, and track research experiments
-- **No Look-Ahead Bias**: All calculations use only past data
+- **Replay Mode**: Historical replay with progressive data revelation (no look-ahead)\n- **Robustness Testing**: Parameter sweeps, fee sensitivity, walk-forward testing
 
 ## 🏗️ Project Structure
 
