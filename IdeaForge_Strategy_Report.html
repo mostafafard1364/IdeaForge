@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdeaForge - Strategy Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0d1117; color: #e0e0e0; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #00d4ff; text-align: center; }
+        h2 { color: #ff6b6b; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .metric { background: #161b22; border-radius: 10px; padding: 15px; text-align: center; border: 1px solid #333; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #00d4ff; }
+        .metric-label { color: #888; font-size: 0.9em; }
+        .positive { color: #00ff88; }
+        .negative { color: #ff4444; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; text-align: center; border-bottom: 1px solid #333; }
+        th { background: #161b22; color: #00d4ff; }
+        tr:hover { background: #1c2128; }
+        .legend { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-color { width: 20px; height: 20px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧬 IdeaForge - Strategy Report</h1>
+        
+        <h2>📊 Performance Metrics</h2>
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value negative">-16.30%</div>
+                <div class="metric-label">Total Return</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">15</div>
+                <div class="metric-label">Total Trades</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value negative">46.7%</div>
+                <div class="metric-label">Win Rate</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value negative">0.55</div>
+                <div class="metric-label">Profit Factor</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value negative">$-1706.62</div>
+                <div class="metric-label">Net Profit</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value negative">0.00%</div>
+                <div class="metric-label">Max Drawdown</div>
+            </div>
+        </div>
+        
+        <h2>🎨 Market DNA Colors</h2>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color" style="background:#FFD700"></div> YELLOW (Weak)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#FF69B4"></div> PINK (Medium)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#1E90FF"></div> BLUE (Strong Bullish)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#DC143C"></div> RED (Strong Bearish)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#F5F5F5"></div> WHITE (High Pressure)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#32CD32"></div> GREEN (Uniform)</div>
+        </div>
+        
+        <h2>📋 Trade List</h2>
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Direction</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+                <th>Entry Price</th>
+                <th>Exit Price</th>
+                <th>PnL</th>
+                <th>Exit Reason</th>
+            </tr>
+
+            <tr>
+                <td>1</td>
+                <td>LONG</td>
+                <td>01-01 03:00</td>
+                <td>01-01 18:00</td>
+                <td>$52610.23</td>
+                <td>$47938.37</td>
+                <td class="negative">$-861.77</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>2</td>
+                <td>SHORT</td>
+                <td>01-01 18:00</td>
+                <td>01-02 07:00</td>
+                <td>$47938.37</td>
+                <td>$45703.42</td>
+                <td class="positive">$387.78</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>3</td>
+                <td>LONG</td>
+                <td>01-02 07:00</td>
+                <td>01-02 19:00</td>
+                <td>$45703.42</td>
+                <td>$42234.91</td>
+                <td class="negative">$-704.21</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>4</td>
+                <td>SHORT</td>
+                <td>01-02 19:00</td>
+                <td>01-03 11:00</td>
+                <td>$42234.91</td>
+                <td>$41382.91</td>
+                <td class="positive">$152.47</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>5</td>
+                <td>LONG</td>
+                <td>01-03 11:00</td>
+                <td>01-04 05:00</td>
+                <td>$41382.91</td>
+                <td>$42312.57</td>
+                <td class="positive">$174.28</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>6</td>
+                <td>SHORT</td>
+                <td>01-04 05:00</td>
+                <td>01-05 09:00</td>
+                <td>$42312.57</td>
+                <td>$38221.64</td>
+                <td class="positive">$823.75</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>7</td>
+                <td>LONG</td>
+                <td>01-05 09:00</td>
+                <td>01-06 10:00</td>
+                <td>$38221.64</td>
+                <td>$40210.01</td>
+                <td class="positive">$473.40</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>8</td>
+                <td>SHORT</td>
+                <td>01-06 10:00</td>
+                <td>01-06 18:00</td>
+                <td>$40210.01</td>
+                <td>$40088.74</td>
+                <td class="positive">$10.11</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>9</td>
+                <td>LONG</td>
+                <td>01-06 18:00</td>
+                <td>01-07 11:00</td>
+                <td>$40088.74</td>
+                <td>$38386.97</td>
+                <td class="negative">$-441.10</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>10</td>
+                <td>SHORT</td>
+                <td>01-07 11:00</td>
+                <td>01-07 12:00</td>
+                <td>$38386.97</td>
+                <td>$39863.08</td>
+                <td class="negative">$-385.24</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>11</td>
+                <td>LONG</td>
+                <td>01-07 12:00</td>
+                <td>01-07 14:00</td>
+                <td>$39863.08</td>
+                <td>$39250.71</td>
+                <td class="negative">$-158.68</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>12</td>
+                <td>SHORT</td>
+                <td>01-07 14:00</td>
+                <td>01-07 23:00</td>
+                <td>$39250.71</td>
+                <td>$43295.29</td>
+                <td class="negative">$-946.04</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>13</td>
+                <td>LONG</td>
+                <td>01-07 23:00</td>
+                <td>01-08 01:00</td>
+                <td>$43295.29</td>
+                <td>$42399.50</td>
+                <td class="negative">$-183.59</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>14</td>
+                <td>SHORT</td>
+                <td>01-08 01:00</td>
+                <td>01-08 07:00</td>
+                <td>$42399.50</td>
+                <td>$42162.01</td>
+                <td class="positive">$28.58</td>
+                <td>signal</td>
+            </tr>
+    
+            <tr>
+                <td>15</td>
+                <td>LONG</td>
+                <td>01-08 07:00</td>
+                <td>01-09 07:00</td>
+                <td>$42162.01</td>
+                <td>$41841.13</td>
+                <td class="negative">$-76.35</td>
+                <td>end_of_data</td>
+            </tr>
+    
+        </table>
+        
+        <h2>📈 Strategy Logic</h2>
+        <div style="background:#161b22; padding:15px; border-radius:10px; margin:20px 0;">
+            <p><strong>Entry Signal:</strong> When market color is BLUE (strong bullish) with strength > 0.5</p>
+            <p><strong>Exit Signal:</strong> When market color is RED (strong bearish) with strength > 0.5</p>
+            <p><strong>Position Size:</strong> 95% of available capital</p>
+            <p><strong>Transaction Costs:</strong> 0.1% fee + 0.05% slippage per trade</p>
+        </div>
+        
+        <p style="text-align:center; color:#666; margin-top:30px;">Generated by IdeaForge - Quantitative Market Research Laboratory</p>
+    </div>
+</body>
+</html>

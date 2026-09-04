@@ -64,7 +64,6 @@ def init_session_state():
     if 'registry' not in st.session_state:
         st.session_state.registry = ExperimentRegistry()
     if 'runner' not in st.session_state:
-    if 'runner' not in st.session_state:
         st.session_state.runner = ExperimentRunner(st.session_state.registry)
 
 
@@ -250,8 +249,131 @@ def backtest_page():
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Return", f"{result.total_return_pct:.2f}%")
         col2.metric("Max Drawdown", f"{result.max_drawdown_pct:.2f}%")
-        col3.metric("Avg Trade", f"${result.avg_trade:.2f}")
+                col3.metric("Avg Trade", f"${result.avg_trade:.2f}")
         col4.metric("Expectancy", f"${result.expectancy:.2f}")
+
+
+def replay_page():
+    """Historical replay page."""
+    st.markdown('<p class="main-header">⏮️ Historical Replay</p>', unsafe_allow_html=True)
+    
+    if st.session_state.processed_data is None:
+        st.info("Please analyze market data first.")
+        return
+    
+    df = st.session_state.processed_data
+    
+    # Replay controls
+    st.subheader("Replay Controls")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        start_idx = st.slider("Start Candle", 0, len(df)-1, 0)
+    with col2:
+        step_size = st.selectbox("Step Size", [1, 5, 10, 20, 50], index=0)
+    with col3:
+        speed = st.select_slider("Speed", options=["1 step", "5 steps", "10 steps"], value="1 step")
+    
+    steps_to_move = int(speed.split()[0])
+    
+    # Initialize replay state
+    if 'replay_idx' not in st.session_state:
+        st.session_state.replay_idx = start_idx
+    
+    # Navigation buttons
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        if st.button("⏮️ Start"):
+            st.session_state.replay_idx = start_idx
+    with col2:
+        if st.button("⏯️ Step Back"):
+            st.session_state.replay_idx = max(0, st.session_state.replay_idx - steps_to_move)
+    with col3:
+        if st.button("⏭️ Step Forward"):
+            st.session_state.replay_idx = min(len(df)-1, st.session_state.replay_idx + steps_to_move)
+    with col4:
+        if st.button("🏁 End"):
+            st.session_state.replay_idx = len(df) - 1
+    
+    # Show revealed data
+    revealed = df.iloc[:st.session_state.replay_idx + 1]
+    st.info(f"Revealing data: {len(revealed)} / {len(df)} candles "
+            f"(Current: {df.iloc[st.session_state.replay_idx]['timestamp']})")
+    
+    # Show chart with revealed data only
+    display_df = revealed.tail(50)
+    fig = st.session_state.chart_renderer.create_chart(
+        display_df, title="Replay View (No Future Data)",
+        show_volume=True, show_signals=True
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Show current candle info
+    current = df.iloc[st.session_state.replay_idx]
+    st.subheader("Current Candle")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Close", f"${current['close']:.2f}")
+    col2.metric("Color", str(current.get('color', 'N/A')))
+    col3.metric("Efficiency", f"{current.get('efficiency', 0):.3f}")
+    col4.metric("Pressure", f"{current.get('pressure', 0):.3f}")
+
+
+def robustness_page():
+    """Robustness testing page."""
+    st.markdown('<p class="main-header">🧪 Robustness Testing</p>', unsafe_allow_html=True)
+    
+    if st.session_state.processed_data is None:
+        st.info("Please analyze market data first.")
+        return
+    
+    df = st.session_state.processed_data
+    
+    from research.robustness import RobustnessTester
+    
+    st.subheader("Fee Sensitivity Test")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        fee_min = st.number_input("Min Fee (%)", 0.0, 1.0, 0.0) / 100
+    with col2:
+        fee_max = st.number_input("Max Fee (%)", 0.0, 1.0, 0.5) / 100
+    
+    if st.button("Run Fee Sensitivity Test"):
+        tester = RobustnessTester()
+        result = tester.fee_sensitivity_test(df)
+        
+        st.subheader("Results")
+        summary = result.get_summary()
+        
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Tests Run", summary.get('total_tests', 0))
+        col2.metric("Avg Profit Factor", f"{summary.get('pf_mean', 0):.2f}")
+        col3.metric("Avg Win Rate", f"{summary.get('wr_mean', 0):.1f}%")
+        col4.metric("Stability Score", f"{result.stability_score:.2f}")
+        
+        # Results table
+        import pandas as pd
+        results_df = pd.DataFrame(result.results)
+        st.dataframe(results_df)
+    
+    st.subheader("Time Period Test (Walk-Forward)")
+    n_periods = st.slider("Number of Periods", 2, 5, 3)
+    
+    if st.button("Run Walk-Forward Test"):
+        tester = RobustnessTester()
+        result = tester.time_period_test(df, periods=n_periods)
+        
+        st.subheader("Results by Period")
+        results_df = pd.DataFrame(result.results)
+        st.dataframe(results_df)
+        
+        # Check consistency
+        if len(result.results) >= 2:
+            pf_values = [r['profit_factor'] for r in result.results if r['profit_factor'] != float('inf')]
+            if pf_values:
+                consistency = min(pf_values) / max(pf_values) if max(pf_values) > 0 else 0
+                st.metric("Consistency Score", f"{consistency:.2f}",
+                         help="Min PF / Max PF - higher is more consistent")
 
 
 def main():
@@ -262,7 +384,8 @@ def main():
     st.markdown("---")
     page = st.radio(
         "Navigation",
-        ["📈 Market", "🔬 Research Lab", "🧪 Experiments", "📊 Backtest"],
+        ["📈 Market", "🔬 Research Lab", "🧪 Experiments", "📊 Backtest",
+         "⏮️ Replay", "🧪 Robustness"],
         horizontal=True, label_visibility="collapsed"
     )
     
@@ -274,10 +397,15 @@ def main():
         experiments_page()
     elif page == "📊 Backtest":
         backtest_page()
+    elif page == "⏮️ Replay":
+        replay_page()
+    elif page == "🧪 Robustness":
+        robustness_page()
 
 
 if __name__ == "__main__":
     main()
+
 
         df_with_signals.tail(200), title="Signals Chart", show_volume=True, show_signals=True
     )
